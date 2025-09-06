@@ -5,10 +5,41 @@ window.quizData = {
   // 問卷題目（multiple: true 代表可複選）
   questions: [
     {
+      id: "basic_Info",
+      title: "基本資訊",
+      multiple: false,
+      fields: [
+        { 
+          type: "text", 
+          id: "name", 
+          label: "姓名", 
+          placeholder: "例如：王小明" 
+        },
+        { 
+          type: "radio", 
+          id: "gender", 
+          label: "性別", 
+          options: ["男", "女", "其他"] 
+        },
+        { 
+          type: "text", 
+          id: "job", 
+          label: "職業", 
+          placeholder: "例如：學生/新豐高中" 
+        },
+        { 
+          type: "text", 
+          id: "contact", 
+          label: "聯絡方式（電話 / FB / Line / IG 擇二）",
+          placeholder: "例如：0912345678/ IG:room2music" 
+        }
+      ]
+    },
+    {
       id: 1,
       title: "樂器種類",
       multiple: false,
-      options: ["電吉他", "木吉他", "電Bass", "Keyboard", "爵士鼓", "主唱"]
+      options: ["電吉他", "木吉他", "Bass", "Keyboard", "爵士鼓", "主唱"]
     },
     {
       id: 2,
@@ -65,7 +96,16 @@ window.quizData = {
       title: "是否有特別指定老師的性別",
       multiple: false,
       options: ["男", "女", "都可以"]
+    },
+    {
+      id: "note_field",
+      title: "其他備註",
+      multiple: false,
+      fields: [
+        { type: "textarea", id: "note", label: "備註（可留空）" }
+    ]
     }
+ 
   ],
 
   // 老師清單 + 偏好（數字從 1 起算，對應每一題的選項）
@@ -76,7 +116,7 @@ window.quizData = {
       name: "陳志穎",
       instrument: "電吉他",
       gender: "男", //（可選，用不到也行）
-      photo: "https://placehold.co/600x400?text=%E9%99%B3%E5%BF%97%E7%A9%8E",
+      photo: "../../photo/jimmy.jpeg",
       preferences: {
         1: [1, 2],
         2: [2, 3, 4, 5],
@@ -93,7 +133,7 @@ window.quizData = {
       name: "陸久溜",
       instrument: "電吉他",
       gender: "男",
-      photo: "https://placehold.co/600x400?text=%E9%99%B8%E4%B9%85%E6%BA%9C",
+      photo: "../../photo/久溜.png",
       preferences: {
         1: [1, 2],
         2: [2, 3, 4, 5],
@@ -110,7 +150,7 @@ window.quizData = {
       name: "楊堯鈞",
       instrument: "電吉他",
       gender: "男",
-      photo: "https://placehold.co/600x400?text=%E6%A5%8A%E5%A0%AF%E9%88%9E",
+      photo: "../../photo/堯鈞.png",
       preferences: {
         1: [1, 2],
         2: [1, 2, 3, 4],
@@ -127,7 +167,7 @@ window.quizData = {
       name: "楊齊",
       instrument: "電吉他",
       gender: "男",
-      photo: "https://placehold.co/600x400?text=%E6%A5%8A%E9%BD%8A",
+      photo: "../../photo/楊齊.png",
       preferences: {
         1: [1, 2, 3],
         2: [1, 2, 3, 4],
@@ -146,7 +186,7 @@ window.quizData = {
       name: "小魚",
       instrument: "木吉他",
       gender: "女",
-      photo: "https://placehold.co/600x400?text=%E5%B0%8F%E9%AD%9A",
+      photo: "../../photo/fish.jpg",
       preferences: {
         1: [2],
         2: [1, 2, 3, 4],
@@ -157,6 +197,147 @@ window.quizData = {
         8: [1, 2, 3],
         9: [2, 3]
       }
+    },
+        // --- Bass ---
+    {
+      id: "xiaoha",
+      name: "小哈",
+      instrument: "Bass",
+      gender: "男",
+      photo: "../../photo/xiaoha.jpg",
+      preferences: {
+        1: [3],
+        2: [2, 3, 4, 5],
+        3: [1, 2, 3, 4, 5],
+        4: [1, 2, 3, 5, 8, 9],
+        5: [1, 2, 3, 4],
+        6: [1, 2, 3, 4, 5, 6],
+        8: [1, 2, 3],
+        9: [1, 3]
+      }
+    },
+    {
+      id: "syc",
+      name: "孫宥丞",
+      instrument: "Bass",
+      gender: "男",
+      photo: "../../photo/syc.png",
+      preferences: {
+        1: [3],
+        2: [1, 2, 3, 4],
+        3: [1, 2, 3, 4],
+        4: [1, 2, 3, 6, 7, 8],
+        5: [1, 2, 3],
+        6: [1, 2, 3, 4, 5],
+        8: [1, 2, 3],
+        9: [1, 3]
+      }
+    },
+    {
+      id: "hmj",
+      name: "黃名璟",
+      instrument: "Bass",
+      gender: "男",
+      photo: "../../photo/hmj.jpg",
+      preferences: {
+        1: [3],
+        2: [1, 2, 3, 4, 5],
+        3: [1, 2, 3, 4, 5],
+        4: [3, 4, 5, 6, 7, 8, 9],
+        5: [1, 2, 3],
+        6: [1, 2, 3, 4, 5],
+        8: [1, 2, 3],
+        9: [1, 3]
+      }
+    },
+
+    // --- 爵士鼓 ---
+    {
+      id: "leaf",
+      name: "小葉",
+      instrument: "爵士鼓",
+      gender: "男",
+      photo: "../../photo/leaf.png",
+      preferences: {
+        1: [5],
+        2: [1, 2, 3, 4, 5],
+        3: [1, 2, 3, 4, 5],
+        4: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        5: [1, 2, 3, 4],
+        6: [1, 2, 3, 4, 5, 6],
+        8: [1, 2, 3],
+        9: [1, 3]
+      }
+    },
+    {
+      id: "wsh",
+      name: "溫士宏",
+      instrument: "爵士鼓",
+      gender: "男",
+      photo: "../../photo/wsh.jpeg",
+      preferences: {
+        1: [5],
+        2: [1, 2, 3, 4, 5],
+        3: [1, 2, 3, 4, 5],
+        4: [1, 2, 6, 7, 8, 9],
+        5: [1, 2, 3],
+        6: [1, 2, 3, 4, 5, 6],
+        8: [1, 2, 3],
+        9: [1, 3]
+      }
+    },
+    {
+      id: "xcheng",
+      name: "小陳",
+      instrument: "爵士鼓",
+      gender: "男",
+      photo: "../../photo/xcheng.jpg",//尚未拿到圖片
+      preferences: {
+        1: [5],
+        2: [2, 3, 4],
+        3: [1, 2, 3, 4],
+        4: [1, 2, 3, 7, 8, 9],
+        5: [1, 2, 3],
+        6: [1, 2, 3, 4, 5, 6],
+        8: [1, 2, 3],
+        9: [1, 3]
+      }
+    },
+    {
+      id: "kay",
+      name: "Kay",
+      instrument: "爵士鼓",
+      gender: "女",
+      photo: "../../photo/kay.jpg",//尚未拿到圖片
+      preferences: {
+        1: [5],
+        2: [1, 2, 3, 4, 5],
+        3: [1, 2, 3, 4, 5],
+        4: [3, 4, 5, 7, 9],
+        5: [1, 2, 3],
+        6: [1, 2, 3, 4, 6],
+        8: [2, 3],
+        9: [2, 3]
+      }
+    },
+    {
+      id: "ruxin",
+      name: "如歆",
+      instrument: "爵士鼓",
+      gender: "女",
+      photo: "../../photo/ruxin.jpeg",
+      preferences: {
+        1: [5],
+        2: [1, 2, 3, 4],
+        3: [1, 2, 3, 4],
+        4: [2, 3, 5, 6, 7, 8, 9],
+        5: [1, 2, 3],
+        6: [1, 2, 3, 4, 5, 6],
+        8: [1, 2, 3],
+        9: [2, 3]
+      }
     }
   ]
 };
+
+

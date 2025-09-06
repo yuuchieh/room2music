@@ -13,13 +13,13 @@
     @media(min-width:900px){.hero{grid-template-columns:1fr 1fr;align-items:center}}
     h1{font-size:clamp(28px,4vw,48px);margin:0 0 12px;font-weight:900}
     p.lead{font-size:18px;color:var(--muted);line-height:1.7}
-    .btn{display:inline-flex;align-items:center;gap:8px;border-radius:16px;padding:12px 18px;text-decoration:none;font-weight:600;border:1px solid var(--border)}
+    .btn{display:inline-flex;align-items:center;gap:8px;border-radius:16px;padding:12px 18px;text-align: center;text-decoration:none;font-weight:600;border:1px solid var(--border)}
     .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
     .btn:hover{filter:brightness(.96)}
     .btn[disabled]{opacity:.5;pointer-events:none}
     .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
     .card.pad{padding:24px}
-    .imgbox{aspect-ratio:16/9;width:100%;overflow:hidden;border-radius:16px;border:1px solid var(--border)}
+    .imgbox{aspect-ratio:16/9;width:100%;overflow:hidden;border-radius:0;border:none}
     .imgbox img{width:100%;height:100%;object-fit:cover;display:block}
     .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
     .pill{border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:12px;color:#334155;background:#f8fafc}
@@ -39,13 +39,160 @@
     .result-grid{display:grid;gap:24px;grid-template-columns:1fr}
     @media(min-width:900px){.result-grid{grid-template-columns:1fr 1fr}}
     .teacher-photo{width:100%;height:260px;object-fit:cover;border-bottom:1px solid var(--border);display:block}
-    .runner{display:flex;gap:12px;align-items:center}
-    .runner img{width:56px;height:56px;border-radius:12px;border:1px solid var(--border);object-fit:cover}
+    
+    /* 讓每個 runner 項目內部更平衡 */
+    .runner {
+      flex-direction: column; /* 讓圖片和文字上下排列 */
+      align-items: center; /* 水平居中 */
+      text-align: center; /* 文字也居中 */
+      gap: 8px; /* 圖片和文字之間的間距 */
+    }
+
+    /* 調整圖片尺寸 */
+    .runner img {
+      width: 90px;
+      height: 90px;
+      border-radius: 12px; /* 改成圓形圖片，更具設計感 */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* 輕微陰影，增加立體感 */
+    }
+
+    /* 調整文字樣式 */
+    .runner .name {
+      font-size: 18px; /* 讓名字更突出 */
+      font-weight: 600;
+    }
+    .runner .muted {
+      font-size: 14px; /* 樂器名稱維持小一點 */
+    }
+
     .muted{color:var(--muted)}
     .fade-enter{opacity:0;transform:translateX(24px)}
     .fade-enter.active{opacity:1;transform:translateX(0);transition:all .2s ease}
     .fade-exit{opacity:1;transform:translateX(0)}
     .fade-exit.active{opacity:0;transform:translateX(-24px);transition:all .2s ease}
+
+
+    /* === 背景 === */
+    body {
+      background: radial-gradient(circle at top, #1a1a2e, #0a0a0a 70%);
+      color: #fff;
+      font-family: "Noto Sans TC", sans-serif;
+    }
+
+    /* 浮動音符 + 貓咪 */
+    .floating-icons {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .floating-icons span {
+      position: absolute;
+      font-size: 24px;
+      color: rgba(233,30,99,0.5); /* 粉紅亮色 */
+      animation: floatAnim 12s linear infinite;
+    }
+    @keyframes floatAnim {
+      0%   { transform: translateY(100vh) scale(0.8); opacity: 0; }
+      20%  { opacity: 1; }
+      100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+    }
+
+    /* 調整文字顏色 */
+    p, label, input, textarea {
+      color: #f5f5f5;
+    }
+    .muted {
+      color: #ccc !important;
+    }
+
+    /* 卡片 */
+    .card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      color: #fff;
+    }
+
+    /* 按鈕 */
+    .btn.primary {
+      background: linear-gradient(90deg, #e91e63, #8e24aa);
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 10px rgba(233,30,99,0.6);
+    }
+    .btn.primary:hover {
+      box-shadow: 0 0 16px rgba(233,30,99,0.9);
+      transform: scale(1.05);
+    }
+
+    .btn.second {
+      background: linear-gradient(45deg, #917884, #b4a5a0);
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 10px rgba(255, 105, 180, 0.4);
+    }
+    .btn.second:hover {
+      box-shadow: 0 0 16px rgba(255, 105, 180, 0.6);
+      transform: translateY(-2px); /* 向上輕微移動，提供「抬起」的動態感 */
+    }
+    #retryBtn:hover {
+      box-shadow: 0 0 16px rgba(120, 120, 120, 0.6); /* 調整為灰色調的陰影 */
+      transform: translateY(-2px);
+    }
+
+    /* 選項 */
+    .option {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+    }
+    .option:hover {
+      background: rgba(233,30,99,0.2);
+    }
+    .option.selected {
+      background: linear-gradient(90deg, #ff9a9e, #e91e63);
+      color: #fff;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      color: #333; /* 這會讓使用者輸入的文字變成深灰色 */
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center; /* 置中 */
+      gap: 16px; /* 按鈕間距 */
+      margin-top: 24px;
+      width: calc(100% - 40px); /* 左右各留 20px 間距 */
+      margin-left: auto;
+      margin-right: auto;
+    }
+    /* 讓按鈕們平分空間 */
+    .action-buttons .btn {
+      flex: 1;
+      /* 您可以移除原有的 padding，若想統一大小，統一設定 width 也可以 */
+      /* padding: 12px 18px; */
+      /* min-width: 0;  如果按鈕內容過長，需要這行來確保 flex: 1 能生效 */
+    }
+    @media (max-width: 768px) { /* 根據您的設計斷點調整 */
+      .action-buttons {
+        flex-direction: column;
+        width: calc(100% - 40px); /* 保持寬度 */
+        margin-left: 20px;
+        margin-right: 20px;
+      }
+      .action-buttons .btn {
+        flex: none; /* 移除 flex: 1 */
+        width: 100%; /* 佔滿寬度 */
+        margin: 8px 0; /* 在堆疊時增加垂直間距 */
+      }
+    }
   </style>
 </head>
 <body>
@@ -53,17 +200,16 @@
     <!-- Hero -->
     <section class="hero">
       <div>
-        <h1>Room2Music</h1>
-        <h2>貳館音樂</h2>
-        <p class="lead">我們相信「好老師，會讓你更想練」。填寫 60 秒問卷，立刻為你精準配對最合拍的老師與課程方向。</p>
-        <div style="display:flex;gap:12px;margin-top:16px">
+      <!--  <h1>Room2Music</h1>-->
+        <h1>貳館音樂</h1>
+          <p style="color: white;">找到你的樂器，遇見適合你的老師，讓音樂融入生活！<br>不論你的目標是什麼，我們都能為你精準配對最適合的老師與課程。</p>        <div style="display:flex;gap:12px;margin-top:16px">
           <a href="#quiz" class="btn primary" id="startQuiz">開始 60 秒配對</a>
-          <a href="#contact" class="btn">聯絡我們</a>
+          <a href="#contact" class="btn second">聯絡我們</a>
         </div>
       </div>
       <div>
         <div class="imgbox">
-          <img src="https://placehold.co/960x540?text=Music+School+Hero" alt="Music classroom">
+          <img src="../../photo/room2logo.png" alt="Music classroom">
         </div>
         <div class="pills">
           <span class="pill">電/木吉他</span><span class="pill">流行/爵士</span><span class="pill">檢定/比賽</span><span class="pill">兒童友善</span>
@@ -71,13 +217,45 @@
       </div>
     </section>
 
+    <!-- About -->
+    <section id="about" class="card pad" style="margin:28px 0">
+      <h3 style="margin:0 0 10px;font-size:22px;font-weight:800">關於 Room2Music</h3>
+      <div style="line-height:1.7; color:#f5f5f5;">
+        <p style="font-weight:bold; font-size:18px;">
+          🎵🎶貳館音樂：實現你的音樂夢想🎶🎵
+        </p>
+        <p>
+          Room2Music致力於點燃每一位學員對音樂的熱情，猶如心臟般強而有力地鼓動著。
+        </p>
+        <p>
+          這裡提供多元化的音樂教學，從樂器入門到進階演奏，都能讓你找到屬於自己的節奏。不論你是想學習吉他、貝斯、爵士鼓，或是挑戰其他樂器，貳館音樂都將陪伴你探索音樂的無限可能。
+        </p>
+        <p style="font-weight:bold; margin-top:20px;">
+          📍我們的教學據點：
+        </p>
+        <ul style="list-style-type:none; padding:0; margin:0;">
+          <li>嘉義市東區學府路</li>
+          <li>台南市東寧路西段22號B1</li>
+          <li>高雄市新興區中正三路127號</li>
+        </ul>
+        <p style="margin-top:20px;">
+          方便你隨時加入我們的音樂大家庭。
+        </p>
+        <p style="font-weight:bold; margin-top:20px;">
+          ✨ 更多詳細內容，追蹤我們下列聯絡方式！隨時掌握最新課程資訊與活動動態！
+        </p>
+      </div>
+    </section>
+
     <!-- Quiz -->
     <section id="quizSection" class="card pad" style="display:none">
       <div style="margin-bottom:16px">
         <div style="display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:8px">
-          <span>進度</span><span id="progressText">1 / 9（0%）</span>
+          <span style="color: rgb(182, 181, 181);">進度</span><span style="color: rgb(182, 181, 181)", id="progressText" >1 / 11（0%）</span>
         </div>
-        <div class="progress"><div id="progressBar"></div></div>
+      <div class="progress" style="background-color: #e0e0e0;">
+        <div id="progressBar" style="background-color: #a04857; width: 50%;"></div>
+      </div>
       </div>
       <div id="questionWrap"></div>
       <div class="quiz-nav">
@@ -87,30 +265,32 @@
     </section>
 
     <!-- Result -->
-    <section id="resultSection" style="display:none">
-      <div class="result-grid">
-        <div class="card">
-          <img id="topPhoto" class="teacher-photo" src="" alt="最佳老師">
-          <div class="pad">
-            <h3 style="margin:0 0 6px;font-size:22px;font-weight:700">最適合你的老師</h3>
-            <p id="topName" style="margin:0 0 10px;font-size:18px;font-weight:800"></p>
-            <div id="topTags" class="pills" style="margin-bottom:10px"></div>
-            <p id="topBio" class="muted" style="line-height:1.7"></p>
-            <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
-              <a href="#contact" class="btn primary">立刻聯絡/預約體驗課</a>
-              <button class="btn" id="retryBtn">重新測一次</button>
-            </div>
+    <section id="resultSection" style="display:none; padding: 20px;">
+      <div style="max-width: 900px; margin: 0 auto; display:grid; gap:24px; grid-template-columns:1fr;">
+        <div class="card pad" style="text-align:center;">
+          <h3 style="margin:0 0 10px;font-size:24px;font-weight:700">最適合你的老師</h3>
+          <div id="topPhotoContainer" style="width: 100%; aspect-ratio: 16/9; margin-bottom: 16px; overflow: hidden; border-radius: 12px;">
+            <img id="topPhoto" src="" alt="最適合你的老師" style="width: 100%; height: 100%; object-fit: contain; background-color: #000;">
           </div>
+          <h4 id="topName" style="margin:0 0 6px;font-size:24px;font-weight:800;"></h4>
+          <div id="topTags" class="pills" style="justify-content:center; margin-bottom: 20px;"></div>
+          <p id="topBio" class="muted" style="line-height:1.7;"></p>
+          <div class="action-buttons">
+            <button class="btn primary" id="submitBtn" style="justify-content:center;">送出問卷</button>
+            <button class="btn" id="retryBtn" style="justify-content:center;">重新測一次</button>
+          </div>     
         </div>
+
         <div class="card pad">
-          <h4 style="margin:0 0 10px;font-size:18px;font-weight:700">次佳人選</h4>
-          <div id="runnerList" style="display:grid;gap:12px"></div>
-          <p class="muted" style="font-size:12px;margin-top:12px">* 若最適合的時段滿班，以上老師也非常契合你的學習偏好。</p>
+          <h4 style="margin:0 0 10px;font-size:20px;font-weight:700">次佳人選</h4>
+          <p class="muted" style="font-size:12px;margin-top:12px">* 若最適合的時段滿班，以下老師也非常契合你的學習偏好。</p>
+
+          <div id="runnerList" style="display:flex;justify-content: space-around; /* 或 space-between, center */align-items: flex-start;gap: 20px; /* 增加並列項目之間的間距 */"></div>
         </div>
       </div>
     </section>
 
-    <!-- Contact（鏡像 Google 表單） -->
+    <!-- Contact（鏡像 Google 表單）
     <form id="gform"
           class="card pad"
           style="margin:28px 0 10px"
@@ -118,12 +298,12 @@
           method="POST">
 
       <h3 style="margin:0 0 10px;font-size:22px;font-weight:800">聯絡我們</h3>
-      <p class="muted" style="margin-top:0">地址：桃園市XX區XX路100號｜電話：(03) 123-4567｜LINE：@musicschool</p>
+      <p class="muted" style="margin-top:0">地址：台南市東區東寧路西段22號｜電話：(06)236-7528｜FB：貳館音樂</p>
 
       <div style="display:grid;gap:16px;grid-template-columns:1fr">
         <div>
           <label class="muted" style="font-size:14px">你的姓名</label>
-          <!-- 姓名：entry.465133692 -->
+          //姓名：entry.465133692
           <input id="nameInput"
                 name="entry.465133692"
                 placeholder="王小明" required
@@ -132,7 +312,7 @@
 
         <div>
           <label class="muted" style="font-size:14px">聯絡方式（Email / 手機）</label>
-          <!-- 聯絡方式：entry.331042393 -->
+          <!-- 聯絡方式：entry.331042393
           <input id="contactInput"
                 name="entry.331042393"
                 placeholder="example@gmail.com" required
@@ -141,7 +321,7 @@
 
         <div>
           <label class="muted" style="font-size:14px">想學的內容/備註</label>
-          <!-- 備註：entry.90522651 -->
+          <!-- 備註：entry.90522651
           <textarea id="noteInput"
                     name="entry.90522651"
                     placeholder="例如：想學流行鋼琴、上課時間偏好週末..."
@@ -150,7 +330,7 @@
         <div>
           <button type="submit" class="btn primary" style="width:100%;justify-content:center">送出留言</button>
           <p class="muted" style="font-size:12px;margin-top:8px">
-            本頁面為純前端，資料透過 Google Apps Script 安全寫入你的 Google 試算表。
+            本頁面為資料透過 Google Apps Script 安全寫入你的 Google 試算表。
           </p>
           <div id="contactStatus" class="muted" style="margin-top:6px"></div>
         </div>
@@ -159,7 +339,7 @@
       <div style="text-align:center;color:#6b7280;font-size:13px;margin-top:20px">
         © <span id="year"></span> room2Music — 讓學音樂變得更輕鬆。
       </div>
-    </form>
+    </form> -->
 
 
   </div>
@@ -198,6 +378,11 @@
     function showSection(which){
       quizSection.style.display = which === 1 ? 'block' : 'none';
       resultSection.style.display = which === 2 ? 'block' : 'none';
+    // 額外控制 About 顯示/隱藏
+      const about = document.getElementById('about');
+      if (about) {
+        about.style.display = (which === 0) ? 'block' : 'none';
+      }
       step = which;
     }
 
@@ -210,79 +395,104 @@
     function renderQuestion(){
       updateProgress();
       const q = questions[current];
-      const old = questionWrap.firstElementChild;
-      if (old){
-        old.className = 'fade-exit';
-        requestAnimationFrame(()=>{ old.className = 'fade-exit active';
-          setTimeout(()=>{ questionWrap.removeChild(old); pushNew(); }, 180);
-        });
-      } else { pushNew(); }
-      function setNavState(q){
-        prevBtn.disabled = current === 0;
-        nextBtn.textContent = (current < total - 1) ? '下一題' : '看結果';
-        nextBtn.disabled = q.multiple
-            ? !(answers[current] && answers[current].length > 0)
-            : (answers[current] == null);
-        }
-      function pushNew(){
-        const wrap = document.createElement('div');
-        wrap.className = 'fade-enter';
-        wrap.innerHTML = `
-            <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
-            <div class="options">
-            ${q.options.map((label, i) => {
-                const selected = q.multiple
-                ? (answers[current] || []).includes(i)
-                : answers[current] === i;
-                return `
-                <button class="option ${selected ? 'selected' : ''}"
-                        data-index="${i}" aria-pressed="${selected}">
-                    <span class="num">${i+1}</span>
-                    <span>${label}</span>
-                </button>`;
-            }).join('')}
-            </div>
-        `;
-        questionWrap.appendChild(wrap);
-        requestAnimationFrame(()=>{ wrap.className = 'fade-enter active'; });
+      questionWrap.innerHTML = '';
 
-        // ✅ 只更新樣式與答案，不呼叫 renderQuestion()，避免動畫觸發
+      const wrap = document.createElement('div');
+      wrap.className = 'fade-enter';
+
+      if (q.fields) {
+        wrap.innerHTML = `
+          <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
+          <div style="display:grid;gap:16px;">
+            ${q.fields.map(f => {
+              if (f.type === "text") {
+                return `
+                  <div>
+                    <label class="muted" style="font-size:14px">${f.label}</label>
+                    <input data-field="${f.id}" placeholder="${f.placeholder}"
+                      style="margin-top:6px;width:100%;padding:10px 12px;
+                      border-radius:12px;border:1px solid var(--border)">
+                  </div>`;
+              } else if (f.type === "radio") {
+                return `
+                  <div>
+                    <label class="muted" style="font-size:14px">${f.label}</label>
+                    <div style="margin-top:6px;display:flex;gap:12px;">
+                      ${f.options.map(opt => `
+                        <label>
+                          <input type="radio" name="${f.id}" value="${opt}" data-field="${f.id}">
+                          ${opt}
+                        </label>
+                      `).join('')}
+                    </div>
+                  </div>`;
+              } else if (f.type === "textarea") {
+                return `
+                  <div>
+                    <label class="muted" style="font-size:14px">${f.label}</label>
+                    <textarea data-field="${f.id}" placeholder="${f.placeholder}"
+                      style="margin-top:6px;width:100%;padding:10px 12px;
+                      border-radius:12px;border:1px solid var(--border);height:120px"></textarea>
+                  </div>`;
+              }
+            }).join('')}
+          </div>
+        `;
+
+      // 🟢 把輸入框的值同步存進 answers[current]
+      requestAnimationFrame(() => {
+        const inputs = wrap.querySelectorAll("[data-field]");
+        inputs.forEach(el => {
+          if (el.type === "radio") {
+            el.addEventListener("change", () => {
+              answers[current] = answers[current] || {};
+              answers[current][el.name] = el.value;
+            });
+          } else {
+            el.addEventListener("input", () => {
+              answers[current] = answers[current] || {};
+              answers[current][el.getAttribute("data-field")] = el.value;
+            });
+          }
+        });
+      });
+
+      } else if (q.options) {
+        wrap.innerHTML = `
+          <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
+          <div class="options">
+            ${q.options.map((label, i) => `
+              <button class="option ${answers[current]===i?'selected':''}" data-index="${i}">
+                <span class="num">${i+1}</span>
+                <span>${label}</span>
+              </button>
+            `).join('')}
+          </div>
+        `;
+
         const optionButtons = wrap.querySelectorAll('.option');
         optionButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
+          btn.addEventListener('click', () => {
             const i = Number(btn.getAttribute('data-index'));
-
             if (q.multiple) {
-                // 複選：切換該按鈕選取狀態
-                const arr = Array.isArray(answers[current]) ? [...answers[current]] : [];
-                const pos = arr.indexOf(i);
-                const willSelect = pos === -1;
-                if (willSelect) arr.push(i); else arr.splice(pos, 1);
-                answers[current] = arr.sort((a,b)=>a-b);
-
-                // 更新該按鈕樣式與 aria
-                btn.classList.toggle('selected', willSelect);
-                btn.setAttribute('aria-pressed', String(willSelect));
+              const arr = Array.isArray(answers[current]) ? [...answers[current]] : [];
+              const pos = arr.indexOf(i);
+              if (pos === -1) arr.push(i); else arr.splice(pos, 1);
+              answers[current] = arr;
+              btn.classList.toggle('selected');
             } else {
-                // 單選：清掉其他的 selected，僅標記當前
-                answers[current] = i;
-                optionButtons.forEach(b => {
-                const idx = Number(b.getAttribute('data-index'));
-                const on = idx === i;
-                b.classList.toggle('selected', on);
-                b.setAttribute('aria-pressed', String(on));
-                });
+              answers[current] = i;
+              optionButtons.forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
             }
-
-            // 依目前答案狀態更新「下一題」按鈕是否啟用
-            setNavState(q);
-            });
+          });
         });
+      }
 
-        // 初次渲染時設定按鈕狀態
-        setNavState(q);
-        }
+      questionWrap.appendChild(wrap);
+      requestAnimationFrame(()=>{ wrap.className = 'fade-enter active'; });
     }
+
     
 
     // ========= 配對演算法 =========
@@ -290,8 +500,8 @@
     // 複選題：每個符合的選項各加 1 分（多選多得）。
    function computeScores(){
       // 第 1 題（樂器）作為分流前提
-      const ansInstrumentIdx = answers[0]; // q1 一定是第一題
-      const instrumentLabel = ansInstrumentIdx != null ? questions[0].options[ansInstrumentIdx] : null;
+      const ansInstrumentIdx = answers[1]; // q1 一定是第一題
+      const instrumentLabel = ansInstrumentIdx != null ? questions[1].options[ansInstrumentIdx] : null;
 
       // 先依樂器挑出候選老師
       const candidates = teachers.filter(t => {
@@ -359,13 +569,17 @@
     function renderResult(){
       const ranking = computeScores();
       const top = teachers.find(t => t.id === ranking[0]?.id);
-      const ansInstrumentIdx = answers[0];
-      const instrumentLabel = ansInstrumentIdx != null ? questions[0].options[ansInstrumentIdx] : null;
+      const ansInstrumentIdx = answers[1];  //修正:因新增第一題是「基本資訊」，第二題是「樂器種類」
+      const instrumentLabel = ansInstrumentIdx != null ? questions[1].options[ansInstrumentIdx] : null;
+      // Top
+      const topPhoto = $('#topPhoto');
+      const topName = $('#topName');
+      const topBio  = $('#topBio');
+      const topTags = $('#topTags');
 
       // 若沒找到老師，給出針對性說明
       if (!top) {
-        const topName = document.getElementById('topName');
-        const topBio  = document.getElementById('topBio');
+
         if (topName) topName.textContent = '暫無對應老師';
         if (topBio)  topBio.textContent  = instrumentLabel
           ? `目前尚無「${instrumentLabel}」對應的老師，歡迎先留言，我們會協助安排或推薦。`
@@ -373,19 +587,17 @@
       }
       const runners = ranking.slice(1,3).map(r => teachers.find(t => t.id === r.id));
 
-      // Top
-      const topPhoto = $('#topPhoto');
-      const topName = $('#topName');
-      const topBio  = $('#topBio');
-      const topTags = $('#topTags');
 
-      topPhoto.src = top?.photo || 'https://placehold.co/600x400?text=Teacher';
+
+      topPhoto.src = top?.photo || 'https://placehold.co/600x400?text=No+Recommended+Teachers';
       topPhoto.alt = top?.name || '最佳老師';
       topName.textContent = top?.name || '暫無推薦';
       topBio.textContent  = top
         ? `授課樂器：${top.instrument}｜（可聯絡我們安排體驗課）`
         : '請調整你的作答條件再試一次。';
       topTags.innerHTML = '';
+
+
       // 這裡可自由放標籤（示意：老師樂器與性別）
       if (top){
         ["#"+top.instrument, top.gender ? "性別："+top.gender : null]
@@ -417,6 +629,26 @@
 
     // ========= 導航 =========
     function next(){
+
+      const q = questions[current];
+
+      // 如果這一題是 fields，要把輸入值收進 answers[current]
+      if (q.fields) {
+        answers[current] = answers[current] || {};
+        q.fields.forEach(f => {
+          if (f.type === "radio") {
+            const checked = document.querySelector(`[name="${f.id}"]:checked`);
+            if (checked) {
+              answers[current][f.id] = checked.value;
+            }
+          } else {
+            const el = document.querySelector(`[data-field="${f.id}"]`);
+            if (el) {
+              answers[current][f.id] = el.value.trim();
+            }
+          }
+        });
+      }
       if (current < total - 1){
         current++;
         renderQuestion();
@@ -440,13 +672,14 @@
     nextBtn.addEventListener('click', next);
     prevBtn.addEventListener('click', prev);
     document.addEventListener('keydown', e => { if (step===1){ if (e.key==='ArrowRight') next(); if (e.key==='ArrowLeft') prev(); }});
+    const yearEl = $('#year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
     
-    $('#year').textContent = new Date().getFullYear();
     // 結果頁「重新測一次」
     document.addEventListener('click', (e)=>{
       if (e.target && e.target.id === 'retryBtn') resetAll();
     });
-    const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyo4x1NhH7JkC6QVzXFt5Rh-TSxqHX4L2vH2FRjowmy8d59k7GdZyOTIiyQyqk-Q9Lx1w/exec';
+    const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwceqE-L6apGfe2dv2rrAOu5Y8ElWr3q2ZYNHmmzf0ggb4DKUDjPKBym0KVGp4yPA/exec';
 
   // 取得單題答案：複選回傳陣列，單選回傳文字
   function getAnswer(q, qi) {
@@ -456,70 +689,130 @@
   }
 
   // 組成要送到 Apps Script 的 payload
-  function buildPayload() {
-      const ranking = computeScores();
-      const top = teachers.find(t => t.id === ranking[0]?.id);
-      const topText = top ? `${top.name}（${top.instrument}）` : '無';
-      const top3 = (ranking || []).slice(0,3)
-        .map((r,i)=>`${i+1}.${teachers.find(t=>t.id===r.id)?.name || r.id}(${r.score})`)
-        .join(' / ');
-      const match = `${topText}｜Top3：${top3}`;
+function buildPayload() {
+  const ranking = computeScores();
+  const top = teachers.find(t => t.id === ranking[0]?.id);
+  const topText = top ? `${top.name}（${top.instrument}）` : '無';
+  const top3 = (ranking || []).slice(0,3)
+    .map((r,i)=>`${i+1}.${teachers.find(t=>t.id===r.id)?.name || r.id}(${r.score})`)
+    .join(' / ');
+  const match = `${topText}｜Top3：${top3}`;
 
-      return {
-        name: document.getElementById('nameInput').value.trim(),
-        contact: document.getElementById('contactInput').value.trim(),
-        note: document.getElementById('noteInput').value.trim(),
-        match,
-        q1:getAnswer(questions[0],0), q2:getAnswer(questions[1],1), q3:getAnswer(questions[2],2),
-        q4:getAnswer(questions[3],3), q5:getAnswer(questions[4],4), q6:getAnswer(questions[5],5),
-        q7:getAnswer(questions[6],6), q8:getAnswer(questions[7],7), q9:getAnswer(questions[8],8)
-      };
+  // 取基本資訊
+  const payload = { match };
+  const basicFields = ["name", "gender", "job", "contact"];
+  basicFields.forEach(id => {
+    const el = document.querySelector(`[data-field="${id}"]`);
+    if (el) {
+      if (el.type === "radio") {
+        const checked = document.querySelector(`[name="${id}"]:checked`);
+        payload[id] = checked ? checked.value : "";
+      } else {
+        payload[id] = el.value.trim();
+      }
     }
+  });
 
-      // 送出到 Apps Script（JSON；用 text/plain 避開預檢）
-      (() => {
-        const form = document.getElementById('gform');
-        if (!form) return;
-        const statusBox = document.getElementById('contactStatus');
-        const submitBtn = form.querySelector('button[type="submit"]');
-        let submitting = false;
+// 單獨處理 note_field 的 textarea
+const noteFieldEl = document.querySelector(`[data-field="note"]`); // 確保這裡的 "note" 與 quiz_data.js 中的 id 相符
+if (noteFieldEl) {
+    payload.note = noteFieldEl.value.trim();
+}
 
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          if (submitting) return;
-          submitting = true;
+  // 把問卷選項答案也記錄下來
+  questions.forEach((q, idx) => {
+    if (q.options) {
+      payload[`q${q.id}`] = getAnswer(q, idx);
+    }
+  });
 
-          try {
-            if (submitBtn) submitBtn.disabled = true;
-            if (statusBox) statusBox.textContent = '傳送中…';
+  return payload;
+}
 
-            const payload = buildPayload();
-            console.log('payload =', payload); // ← 開發時看看是否都有值
+    // --- 修正結果頁「送出問卷」按鈕的邏輯 ---
+    const submitQuestionBtn = document.getElementById('submitBtn'); // 取得結果頁的送出按鈕
+    const statusMessageContainer = document.getElementById('contactStatus'); // 取得用於顯示狀態的元素
 
-            const res = await fetch(GS_ENDPOINT, {
-              method: 'POST',
-              headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // 關鍵：簡易請求
-              body: JSON.stringify(payload)
-            });
+    // 檢查按鈕是否存在
+    if (submitQuestionBtn) {
+        submitQuestionBtn.addEventListener('click', async () => {
+            // 確保在點擊時，所有資料都已正確填寫並儲存到 answers 陣列中
+            // (這部分由 renderQuestion 和選項的點擊事件處理)
 
-            const json = await res.json();   // 你的 doPost 會回傳 { ok:true, data:{...} }
-            console.log('server says:', json);
-            if (!json.ok) throw new Error(json.error || 'server error');
+            // 處理按鈕狀態，避免重複送出
+            submitQuestionBtn.disabled = true;
+            submitQuestionBtn.textContent = '傳送中...';
+            if (statusMessageContainer) {
+                statusMessageContainer.textContent = '正在傳送資料...';
+            }
 
-            if (statusBox) statusBox.textContent = '已送出，我們會盡快與你聯絡！';
-            form.reset();
+            try {
+                // 1. 取得最終的 payload
+                const payload = buildPayload();
+                console.log('payload =', payload); // 開發時檢查資料
 
-          } catch (err) {
-            console.error(err);
-            if (statusBox) statusBox.textContent = '送出失敗，請稍後再試或改用 LINE 聯絡我們。';
-          } finally {
-            if (submitBtn) submitBtn.disabled = false;
-            submitting = false;
-          }
+                // 2. 發送 fetch 請求到 Apps Script
+                const res = await fetch(GS_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                const json = await res.json();
+                console.log('server response:', json);
+
+                if (!json.ok) {
+                    // 如果伺服器回傳錯誤
+                    throw new Error(json.error || '伺服器回傳錯誤');
+                }
+
+                // 3. 顯示成功訊息
+                if (statusMessageContainer) {
+                    statusMessageContainer.textContent = '資料已成功送出！';
+                }
+                alert('問卷已成功送出，我們會盡快與你聯絡！');
+
+                // 成功送出後，可以導向其他頁面或重設問卷
+                // 例如：導回首頁
+                // window.location.href = '#'; 
+                // 或者：重設問卷
+                // resetAll(); 
+
+            } catch (err) {
+                console.error('送出失敗:', err);
+                // 顯示失敗訊息
+                if (statusMessageContainer) {
+                    statusMessageContainer.textContent = '送出失敗，請檢查網路連線或稍後再試。';
+                }
+                alert('送出失敗，請稍後再試。');
+            } finally {
+                // 無論成功或失敗，都恢復按鈕狀態
+                submitQuestionBtn.disabled = false;
+                submitQuestionBtn.textContent = '送出問卷';
+            }
         });
-      })();
+    }
 
 
   </script>
+
+      <!-- Contact放頁尾 -->
+<footer id="contact" class="card" style="margin:28px auto; background-color: #1a1a1a; /* 自定義一個深色背景，與主頁面背景區隔 */">
+  <div style="max-width: 900px; width: 100%; padding: 30px 20px; text-align: center; margin: 0 auto;">
+    <p class="muted" style="margin-top:0; color: #aaa;">台南市東區東寧路西段22號｜(06)236-7528</p>
+
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px; justify-content:center;">
+      <a href="https://www.instagram.com/room2music/" target="_blank" style="width:56px; height:56px; display:flex; justify-content:center; align-items:center; background-color: #333; border-radius:12px; transition:transform 0.2s; cursor:pointer;">
+        <img src="../../photo/instagram.png" alt="Instagram" style="width:48px; height:48px; object-fit:contain;">
+      </a>
+      <a href="https://www.facebook.com/ROOM2MUSIC/?locale=zh_TW" target="_blank" style="width:56px; height:56px; display:flex; justify-content:center; align-items:center; background-color: #333; border-radius:12px; transition:transform 0.2s; cursor:pointer;">
+        <img src="../../photo/facebook.png" alt="Facebook" style="width:48px; height:48px; object-fit:contain;">
+      </a>
+      <a href="https://maps.app.goo.gl/xkhWrudjteqcfzjs9" target="_blank" style="width:56px; height:56px; display:flex; justify-content:center; align-items:center; background-color: #333; border-radius:12px; transition:transform 0.2s; cursor:pointer;">
+        <img src="../../photo/googlemap.png" alt="Google Map" style="width:48px; height:48px; object-fit:contain;">
+      </a>
+    </div>
+  </div>
+</footer>
 </body>
 </html>
