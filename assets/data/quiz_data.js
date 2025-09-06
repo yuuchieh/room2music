@@ -377,7 +377,7 @@ window.quizData = {
       name: "問問",
       instrument: "主唱",
       gender: "女",
-      photo: "../../photo/wenwen.pngd",
+      photo: "../../photo/wenwen.png",
       preferences: {
         1: [6],
         2: [1, 2, 3],
