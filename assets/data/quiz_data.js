@@ -39,6 +39,7 @@ window.quizData = {
       id: 1,
       title: "樂器種類",
       multiple: false,
+      isInstrument: true, 
       options: ["電吉他", "木吉他", "Bass", "Keyboard", "爵士鼓", "主唱"]
     },
     {
