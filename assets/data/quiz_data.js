@@ -117,7 +117,7 @@ window.quizData = {
       name: "陳志穎",
       instrument: "電吉他",
       gender: "男", //（可選，用不到也行）
-      photo: "../../photo/jimmy.jpeg",
+      photo: "photo/jimmy.jpeg",
       preferences: {
         1: [1, 2],
         2: [2, 3, 4, 5],
@@ -134,7 +134,7 @@ window.quizData = {
       name: "陸久溜",
       instrument: "電吉他",
       gender: "男",
-      photo: "../../photo/久溜.png",
+      photo: "photo/久溜.png",
       preferences: {
         1: [1, 2],
         2: [2, 3, 4, 5],
@@ -151,7 +151,7 @@ window.quizData = {
       name: "楊堯鈞",
       instrument: "電吉他",
       gender: "男",
-      photo: "../../photo/堯鈞.png",
+      photo: "photo/堯鈞.png",
       preferences: {
         1: [1, 2],
         2: [1, 2, 3, 4],
@@ -168,7 +168,7 @@ window.quizData = {
       name: "楊齊",
       instrument: "電吉他",
       gender: "男",
-      photo: "../../photo/楊齊.png",
+      photo: "photo/楊齊.png",
       preferences: {
         1: [1, 2, 3],
         2: [1, 2, 3, 4],
@@ -187,7 +187,7 @@ window.quizData = {
       name: "小魚",
       instrument: "木吉他",
       gender: "女",
-      photo: "../../photo/fish.jpg",
+      photo: "photo/fish.jpg",
       preferences: {
         1: [2],
         2: [1, 2, 3, 4],
@@ -205,7 +205,7 @@ window.quizData = {
       name: "小哈",
       instrument: "Bass",
       gender: "男",
-      photo: "../../photo/xiaoha.jpg",
+      photo: "photo/xiaoha.jpg",
       preferences: {
         1: [3],
         2: [2, 3, 4, 5],
@@ -222,7 +222,7 @@ window.quizData = {
       name: "孫宥丞",
       instrument: "Bass",
       gender: "男",
-      photo: "../../photo/syc.png",
+      photo: "photo/syc.png",
       preferences: {
         1: [3],
         2: [1, 2, 3, 4],
@@ -239,7 +239,7 @@ window.quizData = {
       name: "黃名璟",
       instrument: "Bass",
       gender: "男",
-      photo: "../../photo/hmj.jpg",
+      photo: "photo/hmj.jpg",
       preferences: {
         1: [3],
         2: [1, 2, 3, 4, 5],
@@ -258,7 +258,7 @@ window.quizData = {
       name: "小葉",
       instrument: "爵士鼓",
       gender: "男",
-      photo: "../../photo/leaf.png",
+      photo: "photo/leaf.png",
       preferences: {
         1: [5],
         2: [1, 2, 3, 4, 5],
@@ -275,7 +275,7 @@ window.quizData = {
       name: "溫士宏",
       instrument: "爵士鼓",
       gender: "男",
-      photo: "../../photo/wsh.jpeg",
+      photo: "photo/wsh.jpeg",
       preferences: {
         1: [5],
         2: [1, 2, 3, 4, 5],
@@ -292,7 +292,7 @@ window.quizData = {
       name: "小陳",
       instrument: "爵士鼓",
       gender: "男",
-      photo: "../../photo/xcheng.jpg",//尚未拿到圖片
+      photo: "photo/xcheng.jpg",//尚未拿到圖片
       preferences: {
         1: [5],
         2: [2, 3, 4],
@@ -309,7 +309,7 @@ window.quizData = {
       name: "Kay",
       instrument: "爵士鼓",
       gender: "女",
-      photo: "../../photo/kay.jpg",//尚未拿到圖片
+      photo: "photo/kay.jpg",//尚未拿到圖片
       preferences: {
         1: [5],
         2: [1, 2, 3, 4, 5],
@@ -326,7 +326,7 @@ window.quizData = {
       name: "如歆",
       instrument: "爵士鼓",
       gender: "女",
-      photo: "../../photo/ruxin.jpeg",
+      photo: "photo/ruxin.jpeg",
       preferences: {
         1: [5],
         2: [1, 2, 3, 4],
@@ -344,7 +344,7 @@ window.quizData = {
       name: "小奕",
       instrument: "主唱",
       gender: "女",
-      photo: "../../photo/xiaoyi.png",
+      photo: "photo/xiaoyi.png",
       preferences: {
         1: [6],
         2: [1, 2, 3, 4, 5],
@@ -361,7 +361,7 @@ window.quizData = {
       name: "芊樹",
       instrument: "主唱",
       gender: "女",
-      photo: "../../photo/qianshu.jpeg",
+      photo: "photo/qianshu.jpeg",
       preferences: {
         1: [6],
         2: [1, 2, 3, 4, 5],
@@ -378,7 +378,7 @@ window.quizData = {
       name: "問問",
       instrument: "主唱",
       gender: "女",
-      photo: "../../photo/wenwen.png",
+      photo: "photo/wenwen.png",
       preferences: {
         1: [6],
         2: [1, 2, 3],
@@ -395,7 +395,7 @@ window.quizData = {
       name: "品彥",
       instrument: "主唱",
       gender: "男",
-      photo: "../../photo/pinyan.jpg",
+      photo: "photo/pinyan.jpg",
       preferences: {
         1: [6],
         2: [2, 3, 4, 5],
@@ -414,7 +414,7 @@ window.quizData = {
       name: "小雯",
       instrument: "Keyboard",
       gender: "女",
-      photo: "../../photo/xiaowen.jpg",
+      photo: "photo/xiaowen.jpg",
       preferences: {
         1: [4],
         2: [1, 2, 3, 4, 5],
@@ -431,7 +431,7 @@ window.quizData = {
       name: "德毓",
       instrument: "Keyboard",
       gender: "男",
-      photo: "../../photo/deyu.jpg",//尚未拿到照片
+      photo: "photo/deyu.jpg",//尚未拿到照片
       preferences: {
         1: [4],
         2: [2, 3, 4, 5],
@@ -448,7 +448,7 @@ window.quizData = {
       name: "王淨",
       instrument: "Keyboard",
       gender: "女",
-      photo: "../../photo/wangjing.png",
+      photo: "photo/wangjing.png",
       preferences: {
         1: [4],
         2: [1, 2, 3, 4],
@@ -465,7 +465,7 @@ window.quizData = {
       name: "以真",
       instrument: "Keyboard",
       gender: "女",
-      photo: "../../photo/yizhen.jpg",//尚未拿到照片
+      photo: "photo/yizhen.jpg",//尚未拿到照片
       preferences: {
         1: [4],
         2: [1, 2, 3, 4, 5],
