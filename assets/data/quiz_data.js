@@ -19,7 +19,7 @@ window.quizData = {
           type: "radio", 
           id: "gender", 
           label: "性別", 
-          options: ["男", "女", "其他"] 
+          options: ["男", "女"] 
         },
         { 
           type: "text", 
