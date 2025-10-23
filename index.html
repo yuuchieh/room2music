@@ -223,7 +223,7 @@
       <h3 style="margin:0 0 10px;font-size:22px;font-weight:800">關於 Room2Music</h3>
       <div style="line-height:1.7; color:#f5f5f5;">
         <p style="font-weight:bold; font-size:18px;">
-          🎵🎶貳館音樂：實現你的音樂夢想🎶🎵
+          🎵貳館音樂：實現你的音樂夢想🎶
         </p>
         <p>
           Room2Music致力於點燃每一位學員對音樂的熱情，猶如心臟般強而有力地鼓動著。
@@ -595,7 +595,7 @@
     topPhoto.alt = top?.name || '最佳老師';
     topName.textContent = top?.name || '暫無推薦';
     topBio.textContent  = top
-      ? `授課樂器：${top.instrument}｜（可聯絡我們安排體驗課）`
+      ? `授課樂器：${top.instrument}｜送出問卷我們會盡快與您聯繫安排課程`
       : '請調整你的作答條件再試一次。';
     topTags.innerHTML = '';
     if (top){
@@ -615,12 +615,17 @@
       if (!r) return;
       const row = document.createElement('div');
       row.className = 'runner';
+      row.style.cursor = 'pointer'; // 滑鼠樣式
+
       row.innerHTML = `
-        <img src="${r.photo || 'https://placehold.co/96x96?text=T'}" alt="${r.name}" loading="lazy">
+        <img src="${r.photo || 'https://placehold.co/120x120?text=T'}" alt="${r.name}" style="transition:transform 0.3s ease;" loading="lazy">
         <div>
           <div style="font-weight:600">${r.name}</div>
           <div class="muted" style="font-size:13px">授課樂器：${r.instrument}</div>
         </div>`;
+      //Hover放大效果
+        row.onmouseover = () => row.querySelector('img').style.transform = 'scale(1.1)';
+      row.onmouseout  = () => row.querySelector('img').style.transform = 'scale(1)';
       runnerList.appendChild(row);
     });
   }
