@@ -270,8 +270,8 @@
       <div style="max-width: 900px; margin: 0 auto; display:grid; gap:24px; grid-template-columns:1fr;">
         <div class="card pad" style="text-align:center;">
           <h3 style="margin:0 0 10px;font-size:24px;font-weight:700">最適合你的老師</h3>
-          <div id="topPhotoContainer" style="width: 100%; aspect-ratio: 16/9; margin-bottom: 16px; overflow: hidden; border-radius: 12px;">
-            <img id="topPhoto" src="" alt="最適合你的老師" style="width: 100%; height: 100%; object-fit: contain; background-color: #000;">
+          <div id="topPhotoContainer" style="width: 100%; aspect-ratio: 4/3; margin-bottom: 16px; overflow: hidden; border-radius: 12px;">
+            <img id="topPhoto" src="" alt="最適合你的老師" loading="lazy"; style="width: 100%; height: 100%; object-fit: contain; background-color: #000;">
           </div>
           <h4 id="topName" style="margin:0 0 6px;font-size:24px;font-weight:800;"></h4>
           <div id="topTags" class="pills" style="justify-content:center; margin-bottom: 20px;"></div>
@@ -424,6 +424,56 @@
       });
 
     } else if (q.options) {
+      
+        // === 特別處理：上課時段表格顯示 ===
+        if (q.id === 7) {
+          const days = ["星期一","星期二","星期三","星期四","星期五","星期六","星期日"];
+          const times = ["10:00-13:00","13:00-15:00","15:00-18:00","18:00-21:30"];
+
+          wrap.innerHTML = `
+            <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
+            <table style="border-collapse:collapse;width:100%;text-align:center;color:#fff;">
+              <thead>
+                <tr>
+                  <th style="border:1px solid #666;padding:8px;">時段 \\ 星期</th>
+                  ${days.map(d=>`<th style="border:1px solid #666;padding:8px;">${d}</th>`).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${times.map(t=>{
+                  return `<tr>
+                    <td style="border:1px solid #666;padding:8px;">${t}</td>
+                    ${days.map((d,di)=>{
+                      const label = `${d}${t}`;
+                      const idx = q.options.indexOf(label);
+                      const disabled = (t==="10:00-13:00" && di<5); // 星期一~五早上禁用
+                      const selected = (answers[current]||[]).includes(idx);
+                      return `<td style="border:1px solid #666;padding:6px;">
+                        <input type="checkbox" data-index="${idx}" ${selected?'checked':''} ${disabled?'disabled':''}>
+                      </td>`;
+                    }).join('')}
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          `;
+
+          // 綁定多選事件
+          const inputs = wrap.querySelectorAll('input[type=checkbox]');
+          inputs.forEach(cb=>{
+            cb.addEventListener('change',()=>{
+              const i = Number(cb.getAttribute('data-index'));
+              const arr = Array.isArray(answers[current]) ? [...answers[current]] : [];
+              const pos = arr.indexOf(i);
+              if (cb.checked && pos === -1) arr.push(i);
+              else if (!cb.checked && pos !== -1) arr.splice(pos,1);
+              answers[current] = arr;
+            });
+          });
+
+        } else {
+          // === 其他題目維持原本的樣式 ===
+
       wrap.innerHTML = `
         <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
         <div class="options">
@@ -454,6 +504,7 @@
         });
       });
     }
+  }
 
     questionWrap.appendChild(wrap);
     requestAnimationFrame(()=>{ wrap.className = 'fade-enter active'; });
@@ -565,7 +616,7 @@
       const row = document.createElement('div');
       row.className = 'runner';
       row.innerHTML = `
-        <img src="${r.photo || 'https://placehold.co/96x96?text=T'}" alt="${r.name}">
+        <img src="${r.photo || 'https://placehold.co/96x96?text=T'}" alt="${r.name}" loading="lazy">
         <div>
           <div style="font-weight:600">${r.name}</div>
           <div class="muted" style="font-size:13px">授課樂器：${r.instrument}</div>
