@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Room2Music</title>
   <style>
+    /* === 全域字體比例自適應設定 === */
+    html {
+      font-size: clamp(16px, 1vw + 0.5rem, 20px);
+    }
+
     :root { --bg:#f8fafc; --fg:#0f172a; --muted:#475569; --card:#fff; --border:#e2e8f0; --accent:#0f172a; }
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Noto Sans,"Helvetica Neue",Arial;color:var(--fg);background:linear-gradient(#fff,var(--bg))}
@@ -180,6 +185,33 @@
       /* padding: 12px 18px; */
       /* min-width: 0;  如果按鈕內容過長，需要這行來確保 flex: 1 能生效 */
     }
+
+    /* === 固定 footer 在畫面底部 === */
+    html, body {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .container {
+      flex: 1;
+    }
+    footer {
+      width:100%;
+      margin-top: auto;
+      flex-shrink: 0;
+    }
+    footer .card {
+      max-width: none;           /* 移除中間限制寬度 */
+      width: 100%;               /* 讓卡片也撐滿 footer 寬度 */
+      box-sizing: border-box;    /* 保持邊界不超出 */
+    }
+
+    footer .card > div {
+      max-width: 900px;          /* 內容區仍然維持原來的寬度 */
+      margin: 0 auto;            /* 內容置中 */
+    }
+
+
     @media (max-width: 768px) { /* 根據您的設計斷點調整 */
       .action-buttons {
         flex-direction: column;
@@ -627,6 +659,7 @@
       });
     }
 
+<<<<<<< Updated upstream
     // ========= 導航 =========
     function next(){
 
@@ -647,6 +680,24 @@
               answers[current][f.id] = el.value.trim();
             }
           }
+=======
+    topPhoto.src = top?.photo || 'https://placehold.co/600x400?text=No+Recommended+Teachers';
+    topPhoto.alt = top?.name || '最佳老師';
+    topName.textContent = top?.name || '暫無推薦';
+    topBio.textContent  = top
+      ? `授課樂器：${top.instrument}｜感謝填寫！我們會盡快與您聯繫課程時間。
+`
+      : '請調整你的作答條件再試一次。';
+    topTags.innerHTML = '';
+    if (top){
+      ["#"+top.instrument, top.gender ? "性別："+top.gender : null]
+        .filter(Boolean)
+        .forEach(tag=>{
+          const el = document.createElement('span');
+          el.className = 'pill';
+          el.textContent = tag;
+          topTags.appendChild(el);
+>>>>>>> Stashed changes
         });
       }
       if (current < total - 1){
