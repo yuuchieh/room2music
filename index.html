@@ -72,6 +72,10 @@
     .fade-exit{opacity:1;transform:translateX(0)}
     .fade-exit.active{opacity:0;transform:translateX(-24px);transition:all .2s ease}
 
+    #topBio {
+      white-space: pre-line; /* 允許換行符號換行 */
+    }
+
 
     /* === 背景 === */
     body {
@@ -556,6 +560,7 @@
           alert('問卷已成功送出，我們會盡快與你聯絡！');
 
           // 送出後顯示配對結果
+          
           renderResult();
           showSection(2);
           window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -565,7 +570,7 @@
           alert('送出失敗，請稍後再試。');
         } finally {
           nextBtn.disabled = false;
-          nextBtn.textContent = '完成並送出問卷';
+          nextBtn.textContent = '送出問卷';
         }
       };
       return;
@@ -726,7 +731,7 @@
     topPhoto.alt = top?.name || '最佳老師';
     topName.textContent = top?.name || '暫無推薦';
     topBio.textContent  = top
-      ? `授課樂器：${top.instrument}｜送出問卷我們會盡快與您聯繫安排課程`
+      ? `授課樂器：${top.instrument}\n感謝填寫，我們會盡快安排課程並與你聯絡！`
       : '請調整你的作答條件再試一次。';
     topTags.innerHTML = '';
     if (top){
