@@ -102,6 +102,31 @@
       100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
     }
 
+    /* ===== 氣泡提示 ===== */
+    .chat-bubble {
+      position: fixed;
+      background: #fff;
+      color: #333;
+      font-size: 14px;
+      border-radius: 12px;
+      padding: 10px 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transform: translate(-50%, -100%);
+      transition: opacity 0.4s;
+      opacity: 1;
+      z-index: 9999;
+    }
+    .chat-bubble.fade-out { opacity: 0; }
+    .wave-char {
+      display: inline-block;
+      animation: wave 0.6s ease-in-out infinite;
+    }
+    @keyframes wave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+
     /* 調整文字顏色 */
     p, label, input, textarea {
       color: #f5f5f5;
@@ -510,6 +535,75 @@
     requestAnimationFrame(()=>{ wrap.className = 'fade-enter active'; });
   }
 
+  // ========= 驗證目前題目 =========
+  function validateCurrentQuestion() {
+    const q = questions[current];
+    const ans = answers[current];
+
+    // 若是最後一題（備註欄）不檢查
+    if (String(q.id) === 'note_field') return true;
+
+    // 🔹 表單題（有 fields）
+    if (q.fields) {
+      for (const f of q.fields) {
+        const val = ans?.[f.id];
+        if (!val || val.trim() === '') {
+          showBubble(`請填寫「${f.label}」喔`);
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // 🔹 單選題
+    if (!q.multiple) {
+      if (ans === null || ans === undefined) {
+        showBubble('請先選一個答案再繼續吧');
+        return false;
+      }
+    }
+
+    // 🔹 複選題
+    if (q.multiple) {
+      if (!Array.isArray(ans) || ans.length === 0) {
+        showBubble('至少選一個選項才行喔');
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // ========= 提示氣泡 =========
+  function showBubble(text) {
+    const old = document.querySelector('.chat-bubble');
+    if (old) old.remove();
+
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    const chars = text.split('').map((ch, i) =>
+      `<span class="wave-char" style="animation-delay:${i * 0.05}s">${ch}</span>`
+    ).join('');
+
+    bubble.innerHTML = `
+      <div class="bubble-content">${chars}<span class="note">🎵</span></div>
+      <div class="bubble-tail"></div>
+    `;
+
+    document.body.appendChild(bubble);
+    const nextBtn = document.querySelector('#nextBtn');
+    const rect = nextBtn.getBoundingClientRect();
+    bubble.style.position = 'fixed';
+    bubble.style.left = `${rect.left + rect.width / 2}px`;
+    bubble.style.top = `${rect.top - 8}px`;
+    bubble.style.transform = 'translate(-50%, -100%)';
+
+    setTimeout(() => {
+      bubble.classList.add('fade-out');
+      setTimeout(() => bubble.remove(), 600);
+    }, 3000);
+  }
+
   // ========= 配對演算法 =========
   function computeScores(){
     const ansInstrumentIdx = getInstrumentAnswerIndex();
@@ -632,6 +726,7 @@
 
   // ========= 導航 =========
   function next(){
+    if (!validateCurrentQuestion()) return; // ✅ 新增：檢查未填題目
     const q = questions[current];
     // 若是 fields 題，進一步保險：把當前畫面值寫回 answers[current]
     if (q.fields) {
