@@ -306,7 +306,7 @@ window.quizData = {
       }
     },
     {
-      id: "xcheng",//沒有7
+      id: "xcheng",
       name: "小陳",
       instrument: "爵士鼓",
       gender: "男",
