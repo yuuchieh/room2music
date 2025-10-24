@@ -419,7 +419,7 @@ window.quizData = {
       name: "品彥",
       instrument: "主唱",
       gender: "男",
-      photo: "photo/pinyan.jpg",
+      photo: "photo/pinyan.png",
       preferences: {
         1: [6],
         2: [2, 3, 4, 5],

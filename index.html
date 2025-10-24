@@ -302,9 +302,9 @@
           <div id="topTags" class="pills" style="justify-content:center; margin-bottom: 20px;"></div>
           <p id="topBio" class="muted" style="line-height:1.7;"></p>
           <div class="action-buttons">
-            <button class="btn primary" id="submitBtn" style="justify-content:center;">送出問卷</button>
+            <!--<button class="btn primary" id="submitBtn" style="justify-content:center;">送出問卷</button>--> 
             <button class="btn" id="retryBtn" style="justify-content:center;">重新測一次</button>
-          </div>     
+          </div>    
         </div>
 
         <div class="card pad">
@@ -533,6 +533,43 @@
 
     questionWrap.appendChild(wrap);
     requestAnimationFrame(()=>{ wrap.className = 'fade-enter active'; });
+    // --- 若為最後一題（備註欄）---
+    if (String(q.id) === 'note_field') {
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.textContent = '送出問卷';
+      nextBtn.onclick = async () => {
+        nextBtn.disabled = true;
+        nextBtn.textContent = '傳送中...';
+
+        try {
+          const payload = buildPayload();
+          console.log('送出問卷 payload =', payload);
+
+          await fetch(GS_ENDPOINT, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(payload),
+            keepalive: true
+          });
+
+          alert('問卷已成功送出，我們會盡快與你聯絡！');
+
+          // 送出後顯示配對結果
+          renderResult();
+          showSection(2);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } catch (err) {
+          console.error('送出失敗:', err);
+          alert('送出失敗，請稍後再試。');
+        } finally {
+          nextBtn.disabled = false;
+          nextBtn.textContent = '完成並送出問卷';
+        }
+      };
+      return;
+    }
   }
 
   // ========= 驗證目前題目 =========
@@ -742,9 +779,21 @@
       });
     }
 
+
+
+  // --- 一般情況下：進入下一題 ---
+
     if (current < total - 1){
       current++;
       renderQuestion();
+
+      // ✅ 如果進入最後一題（備註欄），自動更新按鈕文字
+      const nextQ = questions[current];
+      if (String(nextQ.id) === 'note_field') {
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.textContent = '送出問卷';
+      }
+
     } else {
       renderResult();
       showSection(2);
@@ -758,6 +807,11 @@
     showSection(1);
     renderQuestion();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+    // ✅ 新增：重設「下一題」按鈕狀態
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.textContent = '下一題';
+    nextBtn.disabled = false;
+    nextBtn.onclick = next; // 恢復原本功能 
   }
 
   // ========= 綁定 =========
@@ -815,42 +869,6 @@
     return payload;
   }
 
-  // 結果頁「送出問卷」
-  const submitQuestionBtn = document.getElementById('submitBtn');
-  const statusMessageContainer = document.getElementById('contactStatus'); // 可能不存在，容錯即可
-
-  if (submitQuestionBtn) {
-    submitQuestionBtn.addEventListener('click', async () => {
-      submitQuestionBtn.disabled = true;
-      submitQuestionBtn.textContent = '傳送中...';
-      if (statusMessageContainer) statusMessageContainer.textContent = '正在傳送資料...';
-
-      try {
-        const payload = buildPayload();
-        console.log('payload =', payload);
-
-        await fetch(GS_ENDPOINT, {
-          method: 'POST',
-          mode: 'no-cors',                       // 避開預檢
-          headers: { 'Content-Type': 'text/plain' }, // simple request
-          body: JSON.stringify(payload),
-          keepalive: true
-        });
-
-        // opaque response 無法讀，只要沒 throw 就當成功
-        if (statusMessageContainer) statusMessageContainer.textContent = '資料已成功送出！';
-        alert('問卷已成功送出，我們會盡快與你聯絡！');
-
-      } catch (err) {
-        console.error('送出失敗:', err);
-        if (statusMessageContainer) statusMessageContainer.textContent = '送出失敗，請稍後再試。';
-        alert('送出失敗，請稍後再試。');
-      } finally {
-        submitQuestionBtn.disabled = false;
-        submitQuestionBtn.textContent = '送出問卷';
-      }
-    });
-  }
 </script>
 
 
