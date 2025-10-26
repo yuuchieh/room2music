@@ -473,7 +473,12 @@
     updateProgress();
     const q = questions[current];
     questionWrap.innerHTML = '';
-
+    
+  //  先重設「下一題」按鈕，避免殘留送出狀態
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.textContent = '下一題';
+    nextBtn.disabled = false;
+    nextBtn.onclick = next;
     const wrap = document.createElement('div');
     wrap.className = 'fade-enter';
 
