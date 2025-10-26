@@ -106,6 +106,31 @@
       100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
     }
 
+
+ /* --- 成功提示泡泡：所有裝置都套用 --- */
+    #successBubble {
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      background: rgba(50, 205, 50, 0.9);
+      color: #fff;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      opacity: 0;            /* 預設隱藏，JS 會拉到 1 */
+      pointer-events: none;
+      z-index: 9999;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    @keyframes bubblePop {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50%      { transform: translate(-50%, -52%) scale(1.05); }
+    }
+
     /* ===== 氣泡提示 ===== */
     .chat-bubble {
       position: fixed;
@@ -223,6 +248,51 @@
         margin: 8px 0; /* 在堆疊時增加垂直間距 */
       }
     }
+
+    /* === 成功提示：半透明遮罩 + 白框彈窗 === */
+    #modalBackdrop {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9998;
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    #modalBackdrop.show { opacity: 1; pointer-events: auto; }
+
+    #successModal {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(.98);
+      background: rgba(17,24,39,.95);           /* 深色底，呼應你的深色主題 */
+      border: 2px solid #fff;                   /* 白框 */
+      border-radius: 16px;
+      padding: 20px 24px;
+      color: #fff;
+      max-width: 380px; width: calc(100% - 40px);
+      z-index: 9999;
+      box-shadow: 0 10px 30px rgba(0,0,0,.5);
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    #successModal.show {
+      opacity: 1; pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* 標題/內文 */
+    #successModal .title { font-weight: 800; font-size: 20px; margin: 0 0 6px; }
+    #successModal .message { margin: 0 0 16px; color: #eee; line-height: 1.6; }
+
+    /* 行為按鈕：沿用你站上的主色漸層 */
+    #successModal .actions { display:flex; gap:10px; justify-content:flex-end; }
+    #successModal .btn.primary {
+      background: linear-gradient(90deg, #e91e63, #8e24aa);
+      color:#fff; border:none; box-shadow:0 0 10px rgba(233,30,99,0.6);
+    }
+    #successModal .btn.primary:hover {
+      box-shadow:0 0 16px rgba(233,30,99,0.9); transform: translateY(-1px);
+    }
+
+
   </style>
 </head>
 <body>
@@ -276,6 +346,15 @@
         </p>
       </div>
     </section>
+
+    <div id="modalBackdrop"></div>
+    <div id="successModal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+      <div class="title" id="successTitle">送出成功</div>
+      <p class="message" id="successMessage">恭喜你踏出音樂學習的第一步，請與我們聯絡後續的課程時間規劃！</p>
+      <div class="actions">
+        <button id="confirmModalBtn" class="btn primary">我知道了</button>
+      </div>
+    </div>
 
     <!-- Quiz -->
     <section id="quizSection" class="card pad" style="display:none">
@@ -477,6 +556,9 @@
                       const idx = q.options.indexOf(label);
                       const disabled = (t==="10:00-13:00" && di<5); // 星期一~五早上禁用
                       const selected = (answers[current]||[]).includes(idx);
+                      if (disabled) {
+                      return `<td style="border:1px solid #666;  padding:6px;"></td>`;
+                        }
                       return `<td style="border:1px solid #666;padding:6px;">
                         <input type="checkbox" data-index="${idx}" ${selected?'checked':''} ${disabled?'disabled':''}>
                       </td>`;
@@ -537,41 +619,50 @@
 
     questionWrap.appendChild(wrap);
     requestAnimationFrame(()=>{ wrap.className = 'fade-enter active'; });
+
+
+    prevBtn.style.visibility = (current === 0) ? 'hidden' : 'visible'; //在第一題隱藏「上一題」按鈕
+
     // --- 若為最後一題（備註欄）---
     if (String(q.id) === 'note_field') {
       const nextBtn = document.getElementById('nextBtn');
       nextBtn.textContent = '送出問卷';
-      nextBtn.onclick = async () => {
+      nextBtn.onclick = () => {
         nextBtn.disabled = true;
         nextBtn.textContent = '傳送中...';
 
+        const payload = buildPayload();
+        console.log('送出問卷 payload =', payload);
+        // 先送資料（不等待）
+        const body = JSON.stringify(payload);
+        let sent = false;
         try {
-          const payload = buildPayload();
-          console.log('送出問卷 payload =', payload);
-
-          await fetch(GS_ENDPOINT, {
+          if ('sendBeacon' in navigator) {
+            const blob = new Blob([body], { type: 'text/plain' });
+            sent = navigator.sendBeacon(GS_ENDPOINT, blob);
+          }
+        } catch (_) {}
+        if (!sent) {
+          fetch(GS_ENDPOINT, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload),
+            body,
             keepalive: true
-          });
-
-          alert('問卷已成功送出，我們會盡快與你聯絡！');
-
-          // 送出後顯示配對結果
-          
-          renderResult();
-          showSection(2);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        } catch (err) {
-          console.error('送出失敗:', err);
-          alert('送出失敗，請稍後再試。');
-        } finally {
-          nextBtn.disabled = false;
-          nextBtn.textContent = '送出問卷';
+          }).catch(console.error);
         }
+       // 立刻顯示「送出成功」彈窗；按「我知道了」後才切到結果頁
+        showSuccessModal({
+          title: '送出成功',
+          message: '恭喜你踏出音樂學習的第一步，請與我們聯絡後續的課程時間規劃！',
+          onConfirm: () => {
+            renderResult();
+            showSection(2);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            nextBtn.disabled = false;
+            nextBtn.textContent = '送出問卷';
+          }
+        });  
       };
       return;
     }
@@ -597,6 +688,8 @@
       return true;
     }
 
+
+
     // 🔹 單選題
     if (!q.multiple) {
       if (ans === null || ans === undefined) {
@@ -614,6 +707,18 @@
     }
 
     return true;
+  }
+
+   // ========= 成功傳送資料提示氣泡 =========
+  function showSuccessBubble(message) {
+    const bubble = document.getElementById('successBubble');
+    bubble.textContent = message;
+    bubble.style.opacity = '1';
+    bubble.style.transform = 'translate(-50%, -50%) scale(1.05)';
+    setTimeout(() => {
+      bubble.style.opacity = '0';
+      bubble.style.transform = 'translate(-50%, -50%) scale(0.95)';
+    }, 2000);
   }
 
   // ========= 提示氣泡 =========
@@ -644,6 +749,44 @@
       bubble.classList.add('fade-out');
       setTimeout(() => bubble.remove(), 600);
     }, 3000);
+  }
+
+    function showSuccessModal({ title = '送出成功', message = '恭喜你踏出音樂學習的第一步，請與我們聯絡後續的課程時間規劃！', onConfirm } = {}) {
+    let backdrop = document.getElementById('modalBackdrop');
+    let modal = document.getElementById('successModal');
+    let titleEl = document.getElementById('successTitle');
+    let msgEl = document.getElementById('successMessage');
+    let okBtn = document.getElementById('confirmModalBtn');
+
+    if (!backdrop || !modal || !okBtn) return;
+
+    if (titleEl) titleEl.textContent = title;
+    if (msgEl) msgEl.textContent = message;
+
+    // 顯示
+    backdrop.classList.add('show');
+    modal.classList.add('show');
+
+    // 按下「我知道了」
+    const handleOk = () => {
+      backdrop.classList.remove('show');
+      modal.classList.remove('show');
+      okBtn.removeEventListener('click', handleOk);
+      if (typeof onConfirm === 'function') onConfirm();
+    };
+    okBtn.addEventListener('click', handleOk);
+
+    // 按 ESC 關閉（可選）
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        backdrop.classList.remove('show');
+        modal.classList.remove('show');
+        document.removeEventListener('keydown', escHandler);
+        okBtn.removeEventListener('click', handleOk);
+        if (typeof onConfirm === 'function') onConfirm();
+      }
+    };
+    document.addEventListener('keydown', escHandler);
   }
 
   // ========= 配對演算法 =========
@@ -809,18 +952,29 @@
   function resetAll(){
     current = 0;
     answers = questions.map(q => q.fields ? {} : (q.multiple ? [] : null));
+
+    // 清空「下一題」按鈕的所有事件與狀態，避免殘留上一輪的 onclick
+    const nextBtn = document.getElementById('nextBtn');
+    nextBtn.replaceWith(nextBtn.cloneNode(true)); // 🧹這行會完全移除舊事件
+    const newNextBtn = document.getElementById('nextBtn');
+    newNextBtn.textContent = '下一題';
+    newNextBtn.disabled = false;
+    newNextBtn.onclick = next;
+
     showSection(1);
     renderQuestion();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // ✅ 新增：重設「下一題」按鈕狀態
-    const nextBtn = document.getElementById('nextBtn');
-    nextBtn.textContent = '下一題';
-    nextBtn.disabled = false;
-    nextBtn.onclick = next; // 恢復原本功能 
+
+    // 新增：清除所有提示泡泡
+    document.querySelectorAll('.chat-bubble').forEach(b => b.remove());
+
   }
 
   // ========= 綁定 =========
-  startQuizBtn.addEventListener('click', e => { e.preventDefault(); showSection(1); renderQuestion(); });
+  startQuizBtn.addEventListener('click', e => { e.preventDefault();  resetAll();
+  // 新增：滾動到 quiz 區塊
+  document.querySelector('#quizSection').scrollIntoView({ behavior: 'smooth' });  
+   });
   nextBtn.addEventListener('click', next);
   prevBtn.addEventListener('click', prev);
   document.addEventListener('keydown', e => { if (step===1){ if (e.key==='ArrowRight') next(); if (e.key==='ArrowLeft') prev(); }});
