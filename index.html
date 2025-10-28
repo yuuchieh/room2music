@@ -473,7 +473,7 @@
     updateProgress();
     const q = questions[current];
     questionWrap.innerHTML = '';
-    
+
   //  先重設「下一題」按鈕，避免殘留送出狀態
     const nextBtn = document.getElementById('nextBtn');
     nextBtn.textContent = '下一題';
@@ -988,7 +988,7 @@
   document.addEventListener('click', (e)=>{ if (e.target && e.target.id === 'retryBtn') resetAll(); });
 
   // ========= 送出到 Apps Script =========
-  const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzGigK_7H_XClb_RV3fv5LgzuTRzNP9RVISCLwPiLOHQBhEKD2KGEIDcLpZ3blDidd8OQ/exec';
+  const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwEkIAsl0VRt_PDGHkp4Ab0LhGLnyhnDKfw7zX2WyQdH2bvgdo-tDCsre_ghe0Wb-YCWw/exec';
 
   // 取得單題答案：複選→陣列(標籤文字)；單選→文字
   function getAnswer(q, qi) {
