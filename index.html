@@ -843,6 +843,37 @@
         const ans = answers[qi];
         if (q.fields) return; // fields 題（基本資料 / 備註）不進配對分數
 
+          // === 🔸 性別題特例處理 (id=9) ===
+        if (q.id === 9) {
+          // 學生選的性別偏好文字，例如 ["男","女","都可以"]
+          const studentPrefLabel = q.options?.[ans]; 
+          const teacherGenderLabel = t.gender; // 老師性別文字
+
+          // 若學生選「都可以」或與老師性別相同 → 給分
+          if (studentPrefLabel === "都可以" || studentPrefLabel === teacherGenderLabel) {
+            score += weight;
+          }
+          return; // 跳出這題
+        }
+
+        // === 🔸 上課時段特例處理 (id=7) ===
+        if (q.id === 7) {
+          const studentSlots = ans || [];      // 學生選的時段索引陣列
+          const teacherSlots = accept || [];   // 老師可上課時段 (索引陣列)
+          
+          // 計算交集數量
+          const overlap = studentSlots.filter(idx => teacherSlots.includes(idx + 1)).length;
+
+          // 計算比例 (例如有 3 個時段重疊就給 3/學生選的時段數)
+          const ratio = studentSlots.length > 0 ? overlap / studentSlots.length : 0;
+
+          // 給分 = 權重 * 重疊比例
+          score += weight * ratio;
+
+          return; // 跳出這題，不走下面通用邏輯
+        }
+
+
         if (q.multiple) {
           (ans || []).forEach(idx => { if (accept.includes(idx + 1)) score += 1; });
         } else {
