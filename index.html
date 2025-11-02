@@ -294,6 +294,7 @@
 
 
   </style>
+   <link rel="icon" href="data:,">
 </head>
 <body>
   <div class="container">
@@ -632,7 +633,7 @@
     if (String(q.id) === 'note_field') {
       const nextBtn = document.getElementById('nextBtn');
       nextBtn.textContent = '送出問卷';
-      nextBtn.onclick = () => {
+      nextBtn.onclick =async () => {
         nextBtn.disabled = true;
         nextBtn.textContent = '傳送中...';
 
@@ -643,16 +644,17 @@
         let sent = false;
         try {
           if ('sendBeacon' in navigator) {
-            const blob = new Blob([body], { type: 'text/plain' });
+            const bodyStr = 'data=' + encodeURIComponent(JSON.stringify(payload));
+            const blob = new Blob([bodyStr], { type: 'application/x-www-form-urlencoded' });
             sent = navigator.sendBeacon(GS_ENDPOINT, blob);
           }
         } catch (_) {}
         if (!sent) {
-          fetch(GS_ENDPOINT, {
+          await fetch(GS_ENDPOINT, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify(payload),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'data=' + encodeURIComponent(JSON.stringify(payload)),
             keepalive: true
           }).catch(console.error);
         }
@@ -798,47 +800,67 @@
   function computeScores(){
     const ansInstrumentIdx = getInstrumentAnswerIndex();
     const instrumentLabel = getInstrumentLabel();
+    // 🎯 樂器分流權重
+    const INSTRUMENT_WEIGHT_EXACT = 3;
+    const INSTRUMENT_WEIGHT_CROSS = 1;
+    const INSTRUMENT_PREF_BONUS   = 2;
+    const GUITAR_SET = new Set(["電吉他", "木吉他"]);
 
+    // ✅ 補上題目權重（你可以依需求調整數值）
+    const GENDER_WEIGHT   = 1; // 性別符合給幾分
+    const TIMESLOT_WEIGHT = 2; // 時段重疊的影響力（乘上重疊比例
     // 候選老師
     const candidates = teachers.filter(t => {
       if (!instrumentLabel) return true;
-      if (GUITAR_SET.has(instrumentLabel)) {
-        return GUITAR_SET.has(t.instrument);
-      } else {
-        const canTeach = Array.isArray(t.canTeach)
-          ? t.canTeach.includes(instrumentLabel)
-          : (t.instrument === instrumentLabel);
-        return canTeach;
-      }
-    });
+    // 老師的樂器欄位可能是字串或陣列
+    const teacherInstruments = Array.isArray(t.instrument)
+      ? t.instrument
+      : [t.instrument];
+
+    // 🎸 若學生選「電吉他」或「木吉他」，兩者互通
+    if (GUITAR_SET.has(instrumentLabel)) {
+      return teacherInstruments.some(i => GUITAR_SET.has(i));
+    }
+
+    // 其他樂器精準匹配
+    return teacherInstruments.includes(instrumentLabel);
+  });
 
     const scoreList = candidates.map(t => {
       let score = 0;
 
       // 樂器加權
-      if (instrumentLabel) {
-        if (GUITAR_SET.has(instrumentLabel)) {
-          score += (t.instrument === instrumentLabel)
-            ? INSTRUMENT_WEIGHT_EXACT
-            : INSTRUMENT_WEIGHT_CROSS;
-        } else {
-          score += (t.instrument === instrumentLabel)
-            ? INSTRUMENT_WEIGHT_EXACT
-            : INSTRUMENT_WEIGHT_CROSS;
-        }
-        // 偏好加成（注意：老師的 preferences key 是題目 id，1-based 選項 +1）
-        const prefInstrument = t.preferences?.[questions[INSTRUMENT_Q_INDEX].id];
-        if (prefInstrument && prefInstrument.includes(ansInstrumentIdx + 1)) {
-          score += INSTRUMENT_PREF_BONUS;
-        }
+    if (instrumentLabel) {
+      const teacherInstruments = Array.isArray(t.instrument)
+        ? t.instrument
+        : [t.instrument];
+
+      const isExact = teacherInstruments.includes(instrumentLabel);
+      const isGuitarCross =
+        GUITAR_SET.has(instrumentLabel) &&
+        teacherInstruments.some(i => GUITAR_SET.has(i));
+
+      if (isExact) {
+        score += INSTRUMENT_WEIGHT_EXACT;
+      } else if (isGuitarCross) {
+        score += INSTRUMENT_WEIGHT_CROSS;
       }
+
+      // 偏好加成（老師偏好某樂器）
+      const prefInstrument = t.preferences?.[questions[INSTRUMENT_Q_INDEX].id];
+      if (prefInstrument && prefInstrument.includes(ansInstrumentIdx + 1)) {
+        score += INSTRUMENT_PREF_BONUS;
+      }
+    }
 
       // 其他題（跳過樂器題）
       questions.forEach((q, qi) => {
         if (String(q.id) === INSTRUMENT_Q_ID_STR) return;
 
-        const accept = t.preferences[q.id];
-        if (!accept) return;
+        const rawPref = t.preferences?.[q.id];
+        const accept = Array.isArray(rawPref) ? rawPref
+                    : (rawPref != null ? [rawPref] : []);
+        if (accept.length === 0) return;
 
         const ans = answers[qi];
         if (q.fields) return; // fields 題（基本資料 / 備註）不進配對分數
@@ -851,7 +873,7 @@
 
           // 若學生選「都可以」或與老師性別相同 → 給分
           if (studentPrefLabel === "都可以" || studentPrefLabel === teacherGenderLabel) {
-            score += weight;
+            score += GENDER_WEIGHT; // ← 改這裡
           }
           return; // 跳出這題
         }
@@ -868,9 +890,9 @@
           const ratio = studentSlots.length > 0 ? overlap / studentSlots.length : 0;
 
           // 給分 = 權重 * 重疊比例
-          score += weight * ratio;
+          score += TIMESLOT_WEIGHT * ratio; // ← 改這裡
+          return;          
 
-          return; // 跳出這題，不走下面通用邏輯
         }
 
 
@@ -1019,7 +1041,7 @@
   document.addEventListener('click', (e)=>{ if (e.target && e.target.id === 'retryBtn') resetAll(); });
 
   // ========= 送出到 Apps Script =========
-  const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxikoFTK8XwMdm3KMV2agTtRZZvE_PEcG_tpmxJzB_ULifncm_TLqvU2BpmdE4E2z2k/exec';
+  const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbzIFmTPnzdQofBfKf9SYydT1dMlEx4f2W9_hS81CSoz1SdblzZ1QPxbWxCavvMVt7FbMQ/exec';
 
   // 取得單題答案：複選→陣列(標籤文字)；單選→文字
   function getAnswer(q, qi) {

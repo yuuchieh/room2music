@@ -123,7 +123,7 @@ window.quizData = {
     {
       id: "chen",
       name: "陳志穎",
-      instrument: "電吉他",
+      instrument: ["電吉他", "木吉他"],
       gender: "男", //（可選，用不到也行）
       photo: "photo/jimmy.jpeg",
       preferences: {
@@ -141,7 +141,7 @@ window.quizData = {
     {
       id: "lu",
       name: "陸久溜",
-      instrument: "電吉他",
+      instrument: ["電吉他", "木吉他"],
       gender: "男",
       photo: "photo/久溜.png",
       preferences: {
@@ -159,7 +159,7 @@ window.quizData = {
     {
       id: "yangy",
       name: "楊堯鈞",
-      instrument: "電吉他",
+      instrument: ["電吉他","木吉他"],
       gender: "男",
       photo: "photo/堯鈞.png",
       preferences: {
@@ -177,7 +177,7 @@ window.quizData = {
     {
       id: "yangq",
       name: "楊齊",
-      instrument: "電吉他",
+      instrument: ["電吉他", "木吉他","Bass"],
       gender: "男",
       photo: "photo/楊齊.png",
       preferences: {
@@ -197,7 +197,7 @@ window.quizData = {
     {
       id: "fish",
       name: "小魚",
-      instrument: "木吉他",
+      instrument: ["電吉他", "木吉他"],
       gender: "女",
       photo: "photo/fish.jpg",
       preferences: {
