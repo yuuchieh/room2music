@@ -196,7 +196,7 @@ window.quizData = {
     // 木吉他
     {
       id: "fish",
-      name: "小魚",
+      name: "小瑜",
       instrument: ["電吉他", "木吉他"],
       gender: "女",
       photo: "photo/fish.jpg",
