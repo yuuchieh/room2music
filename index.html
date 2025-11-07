@@ -470,19 +470,21 @@
     if (progressText) progressText.textContent = `${current + 1} / ${total}（${percent}%）`;
   }
 
-  function renderQuestion(){
+  function renderQuestion() {
     updateProgress();
     const q = questions[current];
     questionWrap.innerHTML = '';
 
-  //  先重設「下一題」按鈕，避免殘留送出狀態
+    // 重設「下一題」按鈕，避免殘留上一輪狀態或 onclick
     const nextBtn = document.getElementById('nextBtn');
     nextBtn.textContent = '下一題';
     nextBtn.disabled = false;
     nextBtn.onclick = next;
+
     const wrap = document.createElement('div');
     wrap.className = 'fade-enter';
 
+    // ========= 有 fields 的題目（基本資料 / 備註） =========
     if (q.fields) {
       wrap.innerHTML = `
         <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
@@ -537,143 +539,156 @@
         });
       });
 
+    // ========= 有 options 的題目 =========
     } else if (q.options) {
-      
-        // === 特別處理：上課時段表格顯示 ===
-        if (q.id === 7) {
-          const days = ["星期一","星期二","星期三","星期四","星期五","星期六","星期日"];
-          const times = ["10:00-13:00","13:00-15:00","15:00-18:00","18:00-21:30"];
 
-          wrap.innerHTML = `
-            <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
-            <table style="border-collapse:collapse;width:100%;text-align:center;color:#fff;">
-              <thead>
-                <tr>
-                  <th style="border:1px solid #666;padding:8px;">時段 \\ 星期</th>
-                  ${days.map(d=>`<th style="border:1px solid #666;padding:8px;">${d}</th>`).join('')}
-                </tr>
-              </thead>
-              <tbody>
-                ${times.map(t=>{
-                  return `<tr>
-                    <td style="border:1px solid #666;padding:8px;">${t}</td>
-                    ${days.map((d,di)=>{
-                      const label = `${d}${t}`;
-                      const idx = q.options.indexOf(label);
-                      const disabled = (t==="10:00-13:00" && di<5); // 星期一~五早上禁用
-                      const selected = (answers[current]||[]).includes(idx);
-                      if (disabled) {
-                      return `<td style="border:1px solid #666;  padding:6px;"></td>`;
-                        }
-                      return `<td style="border:1px solid #666;padding:6px;">
-                        <input type="checkbox" data-index="${idx}" ${selected?'checked':''} ${disabled?'disabled':''}>
-                      </td>`;
-                    }).join('')}
-                  </tr>`;
-                }).join('')}
-              </tbody>
-            </table>
-          `;
+      // --- 特別處理：上課時段表格（Q7） ---
+      if (q.id === 7) {
+        const days = ["星期一","星期二","星期三","星期四","星期五","星期六","星期日"];
+        const times = ["10:00-13:00","13:00-15:00","15:00-18:00","18:00-21:30"];
 
-          // 綁定多選事件
-          const inputs = wrap.querySelectorAll('input[type=checkbox]');
-          inputs.forEach(cb=>{
-            cb.addEventListener('change',()=>{
-              const i = Number(cb.getAttribute('data-index'));
-              const arr = Array.isArray(answers[current]) ? [...answers[current]] : [];
-              const pos = arr.indexOf(i);
-              if (cb.checked && pos === -1) arr.push(i);
-              else if (!cb.checked && pos !== -1) arr.splice(pos,1);
-              answers[current] = arr;
-            });
-          });
+        wrap.innerHTML = `
+          <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
+          <table style="border-collapse:collapse;width:100%;text-align:center;color:#fff;">
+            <thead>
+              <tr>
+                <th style="border:1px solid #666;padding:8px;">時段 \\ 星期</th>
+                ${days.map(d=>`<th style="border:1px solid #666;padding:8px;">${d}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${times.map(t=>{
+                return `<tr>
+                  <td style="border:1px solid #666;padding:8px;">${t}</td>
+                  ${days.map((d,di)=>{
+                    const label = `${d}${t}`;
+                    const idx = q.options.indexOf(label);
+                    const disabled = (t==="10:00-13:00" && di<5); // 星期一~五早上禁用
+                    const selected = (answers[current]||[]).includes(idx);
+                    if (disabled) {
+                      return `<td style="border:1px solid #666;padding:6px;"></td>`;
+                    }
+                    return `<td style="border:1px solid #666;padding:6px;">
+                      <input type="checkbox" data-index="${idx}" ${selected?'checked':''}>
+                    </td>`;
+                  }).join('')}
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
 
-        } else {
-          // === 其他題目維持原本的樣式 ===
-
-      wrap.innerHTML = `
-        <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
-        <div class="options">
-          ${q.options.map((label, i) => `
-            <button class="option ${q.multiple ? (answers[current]||[]).includes(i) ? 'selected':'' : (answers[current]===i?'selected':'')}"
-                    data-index="${i}">
-              <span class="num">${i+1}</span>
-              <span>${label}</span>
-            </button>
-          `).join('')}
-        </div>
-      `;
-      const optionButtons = wrap.querySelectorAll('.option');
-      optionButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const i = Number(btn.getAttribute('data-index'));
-          if (q.multiple) {
+        const inputs = wrap.querySelectorAll('input[type=checkbox]');
+        inputs.forEach(cb => {
+          cb.addEventListener('change', () => {
+            const i = Number(cb.getAttribute('data-index'));
             const arr = Array.isArray(answers[current]) ? [...answers[current]] : [];
             const pos = arr.indexOf(i);
-            if (pos === -1) arr.push(i); else arr.splice(pos, 1);
+            if (cb.checked && pos === -1) arr.push(i);
+            else if (!cb.checked && pos !== -1) arr.splice(pos, 1);
             answers[current] = arr;
-            btn.classList.toggle('selected');
-          } else {
-            answers[current] = i;
-            optionButtons.forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-          }
+          });
         });
-      });
+
+      // --- 一般選項題 ---
+      } else {
+        wrap.innerHTML = `
+          <h2 style="margin:0 0 12px;font-size:24px;font-weight:800;">${q.title}</h2>
+          <div class="options">
+            ${q.options.map((label, i) => `
+              <button class="option ${q.multiple
+                ? (answers[current]||[]).includes(i) ? 'selected' : ''
+                : (answers[current] === i ? 'selected' : '')}"
+                data-index="${i}">
+                <span class="num">${i+1}</span>
+                <span>${label}</span>
+              </button>
+            `).join('')}
+          </div>
+        `;
+
+        const optionButtons = wrap.querySelectorAll('.option');
+        optionButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const i = Number(btn.getAttribute('data-index'));
+            if (q.multiple) {
+              const arr = Array.isArray(answers[current]) ? [...answers[current]] : [];
+              const pos = arr.indexOf(i);
+              if (pos === -1) arr.push(i); else arr.splice(pos, 1);
+              answers[current] = arr;
+              btn.classList.toggle('selected');
+            } else {
+              answers[current] = i;
+              optionButtons.forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+            }
+          });
+        });
+      }
     }
-  }
 
     questionWrap.appendChild(wrap);
-    requestAnimationFrame(()=>{ wrap.className = 'fade-enter active'; });
+    requestAnimationFrame(() => { wrap.className = 'fade-enter active'; });
 
+    // 上一題按鈕顯示與否
+    prevBtn.style.visibility = (current === 0) ? 'hidden' : 'visible';
 
-    prevBtn.style.visibility = (current === 0) ? 'hidden' : 'visible'; //在第一題隱藏「上一題」按鈕
+      // ========= 最後一題（備註欄）改成送出問卷 =========
+      if (String(q.id) === 'note_field') {
+        const nextBtn = document.getElementById('nextBtn');
+        nextBtn.textContent = '送出問卷';
 
-    // --- 若為最後一題（備註欄）---
-    if (String(q.id) === 'note_field') {
-      const nextBtn = document.getElementById('nextBtn');
-      nextBtn.textContent = '送出問卷';
-      nextBtn.onclick =async () => {
-        nextBtn.disabled = true;
-        nextBtn.textContent = '傳送中...';
-
-        const payload = buildPayload();
-        console.log('送出問卷 payload =', payload);
-        // 先送資料（不等待）
-        const body = JSON.stringify(payload);
-        let sent = false;
-        try {
-          if ('sendBeacon' in navigator) {
-            const bodyStr = 'data=' + encodeURIComponent(JSON.stringify(payload));
-            const blob = new Blob([bodyStr], { type: 'application/x-www-form-urlencoded' });
-            sent = navigator.sendBeacon(GS_ENDPOINT, blob);
+        nextBtn.onclick = async () => {
+          // 確保備註同步回 answers
+          answers[current] = answers[current] || {};
+          const noteEl = document.querySelector('[data-field="note"]');
+          if (noteEl) {
+            answers[current].note = (noteEl.value || '').trim();
           }
-        } catch (_) {}
-        if (!sent) {
-          await fetch(GS_ENDPOINT, {
-            method: 'POST',
-            //mode: 'no-cors',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'data=' + encodeURIComponent(JSON.stringify(payload)),
-            keepalive: true
-          }).catch(console.error);
-        }
-       // 立刻顯示「送出成功」彈窗；按「我知道了」後才切到結果頁
-        showSuccessModal({
-          title: '送出成功',
-          message: '恭喜你踏出音樂學習的第一步，請與我們聯絡後續的課程時間規劃！',
-          onConfirm: () => {
-            renderResult();
-            showSection(2);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            nextBtn.disabled = false;
-            nextBtn.textContent = '送出問卷';
+
+          const payload = buildPayload();
+          console.log('送出問卷 payload =', payload);
+
+          nextBtn.disabled = true;
+          nextBtn.textContent = '傳送中...';
+
+          try {
+            // 使用 x-www-form-urlencoded，避免 CORS preflight
+            await fetch(GS_ENDPOINT, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+              },
+              body: 'data=' + encodeURIComponent(JSON.stringify(payload))
+            });
+
+            // ⚠ 不要去讀 res.text()，因為沒有 Access-Control-Allow-Origin，
+            //   讀取會被瀏覽器擋掉；但請求本身已成功送出 Apps Script。
+          } catch (err) {
+            console.error('送出失敗', err);
+            // 如果想提示使用者，可以加：
+            // showBubble('送出失敗，請稍後再試一次');
           }
-        });  
-      };
-      return;
-    }
+
+          // 無論是否能讀回應，都顯示成功彈窗（你原本的 UX 設計）
+          showSuccessModal({
+            title: '送出成功',
+            message: '恭喜你踏出音樂學習的第一步，請與我們聯絡後續的課程時間規劃！',
+            onConfirm: () => {
+              renderResult();
+              showSection(2);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              nextBtn.disabled = false;
+              nextBtn.textContent = '送出問卷';
+            }
+          });
+        };
+
+        return; // 很重要：避免後面邏輯再改動 nextBtn
+      }
+
   }
+
 
   // ========= 驗證目前題目 =========
   function validateCurrentQuestion() {
