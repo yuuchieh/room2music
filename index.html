@@ -652,7 +652,7 @@
         if (!sent) {
           await fetch(GS_ENDPOINT, {
             method: 'POST',
-            mode: 'no-cors',
+            //mode: 'no-cors',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: 'data=' + encodeURIComponent(JSON.stringify(payload)),
             keepalive: true
@@ -1041,7 +1041,7 @@
   document.addEventListener('click', (e)=>{ if (e.target && e.target.id === 'retryBtn') resetAll(); });
 
   // ========= 送出到 Apps Script =========
-  const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxikoFTK8XwMdm3KMV2agTtRZZvE_PEcG_tpmxJzB_ULifncm_TLqvU2BpmdE4E2z2k/exec';
+  const GS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx9oLers0FZ3gU-Z3vSFv3uUe1BYiIqMG8M8g_gGQ1Z4kLTE8GfumIZau0Bm8_nn3PhhA/exec';
 
   // 取得單題答案：複選→陣列(標籤文字)；單選→文字
   function getAnswer(q, qi) {
