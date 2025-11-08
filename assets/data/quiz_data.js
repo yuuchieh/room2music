@@ -346,7 +346,7 @@ window.quizData = {
       name: "如歆",
       instrument: "爵士鼓",
       gender: "女",
-      photo: "photo/ruxin.jpeg",
+      photo: "photo/ruxin.png",
       preferences: {
         1: [5],
         2: [1, 2, 3, 4],

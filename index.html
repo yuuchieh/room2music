@@ -921,7 +921,31 @@
       return { id: t.id, score };
     });
 
-    scoreList.sort((a,b) => b.score - a.score);
+    // === 排序邏輯：分數高者優先；同分時依學生指定性別優先 ===
+    scoreList.sort((a, b) => {
+      const diff = b.score - a.score;
+      if (diff !== 0) return diff;
+
+      // 取得學生第9題（指定老師性別）的回答
+      const genderIndex = questions.findIndex(q => String(q.id) === '9');
+      const qGender = questions[genderIndex];
+      const ansIdx = answers[genderIndex];
+      const studentPref = qGender?.options?.[ansIdx]; // "男" / "女" / "都可以"
+
+      // 若學生指定男或女 → 同分時優先該性別老師
+      if (studentPref === '男' || studentPref === '女') {
+        const teacherA = teachers.find(t => t.id === a.id);
+        const teacherB = teachers.find(t => t.id === b.id);
+        if (teacherA && teacherB) {
+          if (teacherA.gender === studentPref && teacherB.gender !== studentPref) return -1;
+          if (teacherA.gender !== studentPref && teacherB.gender === studentPref) return 1;
+        }
+      }
+
+      // 若學生選「都可以」或未填 → 不影響排序
+      return 0;
+    });
+    
     return scoreList;
   }
 
