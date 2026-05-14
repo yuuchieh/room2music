@@ -400,11 +400,11 @@ window.quizData = {
     },
 
         {
-      id: "morley",
+      id: "vllee",
       name: "莫微樂",
       instrument: "主唱",
       gender: "男",
-      photo: "photo/pinyan.png",
+      photo: "photo/vllee.jpg",
       preferences: {
         1: [5],
         2: [1,2, 3, 4, 5],
